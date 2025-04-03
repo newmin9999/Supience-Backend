@@ -7,19 +7,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    volumes:
-      - .:/app
-      - /app/build
-      - /app/.gradle
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/supience?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_DEVTOOLS_RESTART_ENABLED=true
-      - SPRING_DEVTOOLS_RESTART_POLLPERIOD=2s
-      - SPRING_DEVTOOLS_RESTART_QUIETPERIOD=1s
-    command: ./gradlew bootRun
     depends_on:
       - mysql
 
