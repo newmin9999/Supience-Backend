@@ -1,12 +1,14 @@
 package com.supience.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleResponse {
@@ -17,4 +19,5 @@ public class ScheduleResponse {
     private LocalDateTime endTime;
     private Integer maxParticipants;
     private Integer currentParticipants;
+    private LocalDateTime createdAt;
 } 
