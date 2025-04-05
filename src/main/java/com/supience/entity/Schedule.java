@@ -2,6 +2,7 @@ package com.supience.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +21,7 @@ public class Schedule {
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
@@ -33,7 +34,10 @@ public class Schedule {
     private Integer maxParticipants;
 
     @Column(nullable = false)
-    private Integer currentParticipants = 0;
+    private Integer currentParticipants;
+
+    @Column(nullable = true)
+    private String createdBy;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -52,13 +56,17 @@ public class Schedule {
         updatedAt = LocalDateTime.now();
     }
 
-    // 생성자
-    public Schedule(String title, String description, LocalDateTime startTime, 
-                   LocalDateTime endTime, Integer maxParticipants) {
+    @Builder
+    public Schedule(String title, String description, LocalDateTime startTime, LocalDateTime endTime,
+                   Integer maxParticipants, Integer currentParticipants, String createdBy) {
         this.title = title;
         this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.maxParticipants = maxParticipants;
+        this.currentParticipants = currentParticipants;
+        this.createdBy = createdBy;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 } 

@@ -30,4 +30,10 @@ public class ScheduleController {
     public ApiResponse<List<ScheduleResponse>> getSchedules() {
         return ApiResponse.success(scheduleService.getSchedules());
     }
+
+    @Operation(summary = "운동 일정 상세 조회", description = "특정 운동 일정의 상세 정보를 조회합니다.")
+    @GetMapping("/{id}")
+    public ApiResponse<ScheduleResponse> getSchedule(@PathVariable Long id) {
+        return ApiResponse.success(scheduleService.getSchedule(id));
+    }
 } 
