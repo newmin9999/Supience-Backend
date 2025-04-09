@@ -18,7 +18,13 @@ spring:
       path: /h2-console
 
 server:
-  port: 8080
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:ssl/supience.p12
+    key-store-password: supience123
+    key-store-type: PKCS12
+    key-alias: supience
 
 springdoc:
   swagger-ui:
