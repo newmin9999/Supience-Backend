@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id
@@ -22,6 +22,9 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    private String loginId;
+
+    @Column(nullable = true, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -30,18 +33,18 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     @Builder
-    public User(String email, String password, String name) {
-        this.email = email;
+    public User(String loginId, String password, String name) {
+        this.loginId = loginId;
         this.password = password;
         this.name = name;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 } 

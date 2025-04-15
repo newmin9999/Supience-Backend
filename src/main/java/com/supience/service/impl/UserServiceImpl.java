@@ -4,43 +4,55 @@ import com.supience.dto.LoginRequest;
 import com.supience.dto.LoginResponse;
 import com.supience.dto.SignupRequest;
 import com.supience.entity.User;
+import com.supience.exception.BusinessException;
+import com.supience.exception.ErrorCode;
 import com.supience.repository.UserRepository;
 import com.supience.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final HttpSession httpSession;
 
-    @Override
-    public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("이메일 또는 비밀번호가 일치하지 않습니다."));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new EntityNotFoundException("이메일 또는 비밀번호가 일치하지 않습니다.");
-        }
-
-        return LoginResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .build();
+    public UserServiceImpl(UserRepository userRepository, 
+                         PasswordEncoder passwordEncoder,
+                         HttpSession httpSession) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.httpSession = httpSession;
     }
 
     @Override
-    @Transactional
-    public LoginResponse signup(SignupRequest request) {
-        // 이메일 중복 확인
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findByLoginId(request.getLoginId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_CREDENTIALS));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        }
+
+        LoginResponse loginResponse = LoginResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .build();
+
+        httpSession.setAttribute("user", loginResponse);
+
+        return loginResponse;
+    }
+
+    @Override
+    public User signup(SignupRequest request) {
+        // 아이디 중복 체크
+        if (userRepository.existsByLoginId(request.getLoginId())) {
+            throw new BusinessException(ErrorCode.DUPLICATE_LOGIN_ID);
         }
 
         // 비밀번호 암호화
@@ -48,19 +60,17 @@ public class UserServiceImpl implements UserService {
 
         // 사용자 생성
         User user = User.builder()
-                .email(request.getEmail())
+                .loginId(request.getLoginId())
                 .password(encodedPassword)
                 .name(request.getName())
                 .build();
 
         // 사용자 저장
-        User savedUser = userRepository.save(user);
+        return userRepository.save(user);
+    }
 
-        // 로그인 응답 반환
-        return LoginResponse.builder()
-                .id(savedUser.getId())
-                .email(savedUser.getEmail())
-                .name(savedUser.getName())
-                .build();
+    @Override
+    public void logout() {
+        httpSession.invalidate();
     }
 } 

@@ -1,40 +1,52 @@
 package com.supience.controller;
 
-import com.supience.dto.ApiResponse;
-import com.supience.dto.LoginRequest;
-import com.supience.dto.LoginResponse;
-import com.supience.dto.SignupRequest;
+import com.supience.dto.UserDto;
+import com.supience.entity.User;
 import com.supience.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.supience.dto.LoginRequest;
+import com.supience.dto.SignupRequest;
+import com.supience.dto.ApiResponse;
+import com.supience.dto.LoginResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "User", description = "사용자 관리 API")
 @RestController
-@RequestMapping("/api/v1/users")
-@RequiredArgsConstructor
+@RequestMapping("/auth")
 public class UserController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
-    @Operation(summary = "로그인", description = "사용자 로그인을 처리합니다.")
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @PostMapping("/login")
-    public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request, HttpSession session) {
-        LoginResponse response = userService.login(request);
-        session.setAttribute("userId", response.getId());
-        return ApiResponse.success(response);
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(request.getLoginId(), request.getPassword())
+        );
+        
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        LoginResponse loginResponse = userService.login(request);
+        
+        return ResponseEntity.ok(new ApiResponse<>(true, "로그인 성공", loginResponse));
     }
 
-    @Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다.")
     @PostMapping("/signup")
-    public ApiResponse<LoginResponse> signup(@Valid @RequestBody SignupRequest request) {
-        LoginResponse response = userService.signup(request);
-        return ApiResponse.success("회원가입이 완료되었습니다.", response);
+    public ResponseEntity<ApiResponse<User>> signup(@RequestBody SignupRequest request) {
+        User user = userService.signup(request);
+        return ResponseEntity.ok(new ApiResponse<>(true, "회원가입 성공", user));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout() {
+        userService.logout();
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok(new ApiResponse<>(true, "로그아웃 성공", null));
     }
 } 
