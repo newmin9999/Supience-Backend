@@ -27,11 +27,6 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getLoginId(), request.getPassword())
-        );
-        
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         LoginResponse loginResponse = userService.login(request);
         
         return ResponseEntity.ok(new ApiResponse<>(true, "로그인 성공", loginResponse));

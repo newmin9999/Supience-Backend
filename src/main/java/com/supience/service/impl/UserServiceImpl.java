@@ -41,6 +41,7 @@ public class UserServiceImpl implements UserService {
         LoginResponse loginResponse = LoginResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
+                .sessionId(httpSession.getId())
                 .build();
 
         httpSession.setAttribute("user", loginResponse);

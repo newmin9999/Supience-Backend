@@ -13,7 +13,7 @@ import java.util.List;
 
 @Tag(name = "Schedule", description = "운동 일정 관리 API")
 @RestController
-@RequestMapping("/api/v1/schedules")
+@RequestMapping("/v1/schedules")
 @RequiredArgsConstructor
 public class ScheduleController {
 
