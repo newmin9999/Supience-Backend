@@ -1,11 +1,13 @@
 package com.supience.controller;
 
 import com.supience.dto.ApiResponse;
+import com.supience.dto.LoginResponse;
 import com.supience.dto.ScheduleRequest;
 import com.supience.dto.ScheduleResponse;
 import com.supience.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final HttpSession httpSession;
 
     @Operation(summary = "운동 일정 생성", description = "새로운 운동 일정을 생성합니다.")
     @PostMapping
@@ -35,5 +38,12 @@ public class ScheduleController {
     @GetMapping("/{id}")
     public ApiResponse<ScheduleResponse> getSchedule(@PathVariable Long id) {
         return ApiResponse.success(scheduleService.getSchedule(id));
+    }
+
+    @Operation(summary = "운동 일정 제거", description = "특정 운동 일정을 제거합니다.")
+    @DeleteMapping("/{scheduleId}")
+    public ApiResponse<Void> deleteSchedule(@PathVariable Long scheduleId) {
+        scheduleService.deleteSchedule(((LoginResponse) httpSession.getAttribute("user")).getId(), scheduleId);
+        return ApiResponse.success(null);
     }
 } 

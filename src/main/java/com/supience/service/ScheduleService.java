@@ -9,4 +9,5 @@ public interface ScheduleService {
     ScheduleResponse createSchedule(ScheduleRequest request);
     List<ScheduleResponse> getSchedules();
     ScheduleResponse getSchedule(Long id);
-} 
+    void deleteSchedule(Long userId, Long id);
+}

@@ -36,7 +36,7 @@ public class Schedule {
     @Column(nullable = false)
     private Integer currentParticipants;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String createdBy;
 
     @Column(nullable = false)
