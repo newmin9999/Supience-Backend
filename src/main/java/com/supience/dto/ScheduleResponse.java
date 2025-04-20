@@ -1,6 +1,7 @@
 package com.supience.dto;
 
 import com.supience.entity.Schedule;
+import com.supience.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class ScheduleResponse {
                 .endTime(schedule.getEndTime())
                 .maxParticipants(schedule.getMaxParticipants())
                 .currentParticipants(schedule.getCurrentParticipants())
-                .createdBy(schedule.getCreatedBy())
+                .createdBy(schedule.getUser().getName())
                 .createdAt(schedule.getCreatedAt())
                 .updatedAt(schedule.getUpdatedAt())
                 .build();

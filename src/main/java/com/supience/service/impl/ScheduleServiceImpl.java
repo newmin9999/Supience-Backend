@@ -3,7 +3,9 @@ package com.supience.service.impl;
 import com.supience.dto.ScheduleRequest;
 import com.supience.dto.ScheduleResponse;
 import com.supience.entity.Schedule;
+import com.supience.entity.User;
 import com.supience.repository.ScheduleRepository;
+import com.supience.repository.UserRepository;
 import com.supience.service.ScheduleService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private static final Logger log = LoggerFactory.getLogger(ScheduleServiceImpl.class);
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public ScheduleResponse createSchedule(ScheduleRequest request) {
+    public ScheduleResponse createSchedule(Long userId, ScheduleRequest request) {
         Schedule schedule = Schedule.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -30,7 +33,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .endTime(request.getEndTime())
                 .maxParticipants(request.getMaxParticipants())
                 .currentParticipants(0)
-                .createdBy("admin")
+                .user(userRepository.getReferenceById(userId))
                 .build();
         return ScheduleResponse.from(scheduleRepository.save(schedule));
     }

@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,13 +21,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleController {
 
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ScheduleController.class);
     private final ScheduleService scheduleService;
     private final HttpSession httpSession;
 
     @Operation(summary = "운동 일정 생성", description = "새로운 운동 일정을 생성합니다.")
     @PostMapping
     public ApiResponse<ScheduleResponse> createSchedule(@RequestBody ScheduleRequest request) {
-        return ApiResponse.success(scheduleService.createSchedule(request));
+        Long userId = ((LoginResponse) httpSession.getAttribute("user")).getId();
+        log.debug("userId: {}", userId);
+        return ApiResponse.success(scheduleService.createSchedule(userId, request));
     }
 
     @Operation(summary = "운동 일정 목록 조회", description = "모든 운동 일정 목록을 조회합니다.")
