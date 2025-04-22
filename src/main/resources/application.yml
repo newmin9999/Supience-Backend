@@ -13,19 +13,13 @@ spring:
       hibernate:
         format_sql: true
 server:
-  port: 8443
+  port: 8080
   address: 0.0.0.0
   servlet:
     context-path: /api
     session:
       timeout: 30m
-  ssl:
-    enabled: true
-    key-store: classpath:ssl/supience.p12
-    key-store-password: supience123
-    key-store-type: PKCS12
-    key-alias: supience
-
+      
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
