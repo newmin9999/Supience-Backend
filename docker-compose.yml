@@ -4,15 +4,18 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "${SERVER_PORT:-8080}:${SERVER_PORT:-8080}"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/supience?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRINGDOC_SWAGGER_UI_ENABLED=true
       - SPRINGDOC_SWAGGER_UI_PATH=/swagger-ui.html
+      - LOG_LEVEL_SECURITY=${LOG_LEVEL_SECURITY:-DEBUG}
+      - LOG_LEVEL_SUPIENCE=${LOG_LEVEL_SUPIENCE:-DEBUG}
+      - LOG_LEVEL_WEB=${LOG_LEVEL_WEB:-DEBUG}
     depends_on:
       - mysql
     restart: unless-stopped
@@ -22,7 +25,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - MYSQL_DATABASE=supience
     volumes:
       - mysql_data:/var/lib/mysql

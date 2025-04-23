@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# 데이터베이스 설정
+export SPRING_DATASOURCE_URL="jdbc:mysql://mysql:3306/supience?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+export SPRING_DATASOURCE_USERNAME="your-db-username"
+export SPRING_DATASOURCE_PASSWORD="your-db-password"
+
+# 서버 설정
+export SERVER_PORT=8080
+
+# 로깅 레벨 설정
+export LOG_LEVEL_SECURITY=DEBUG
+export LOG_LEVEL_SUPIENCE=DEBUG
+export LOG_LEVEL_WEB=DEBUG
+
+# 추가적인 민감한 정보가 있다면 여기에 추가
+# export SOME_SECRET_KEY="your-secret-key"
