@@ -58,3 +58,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# 환경변수 프로필 파일
+*.profile
