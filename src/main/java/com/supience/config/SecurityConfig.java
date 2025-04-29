@@ -43,7 +43,7 @@ public class SecurityConfig {
                             userInfoEndpointConfig ->
                                     userInfoEndpointConfig.userService(customOAuth2UserService)
                     )
-                    .defaultSuccessUrl("http://localhost:3000", true)
+                    .defaultSuccessUrl("http://ksupa.org", true)
             );
 
         return http.build();
