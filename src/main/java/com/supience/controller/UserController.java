@@ -14,6 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,8 +28,16 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest request, HttpServletResponse response) {
         LoginResponse loginResponse = userService.login(request);
+        
+        // 세션 ID를 쿠키로 설정
+        Cookie sessionCookie = new Cookie("JSESSIONID", loginResponse.getSessionId());
+        sessionCookie.setPath("/");
+        sessionCookie.setHttpOnly(true);
+        sessionCookie.setSecure(true); // HTTPS에서만 쿠키 전송
+        sessionCookie.setMaxAge(30 * 60); // 30분
+        response.addCookie(sessionCookie);
         
         return ResponseEntity.ok(new ApiResponse<>(true, "로그인 성공", loginResponse));
     }
@@ -39,9 +49,18 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout() {
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse response) {
         userService.logout();
         SecurityContextHolder.clearContext();
+        
+        // 쿠키 삭제
+        Cookie sessionCookie = new Cookie("JSESSIONID", null);
+        sessionCookie.setPath("/");
+        sessionCookie.setHttpOnly(true);
+        sessionCookie.setSecure(true);
+        sessionCookie.setMaxAge(0);
+        response.addCookie(sessionCookie);
+        
         return ResponseEntity.ok(new ApiResponse<>(true, "로그아웃 성공", null));
     }
 } 
