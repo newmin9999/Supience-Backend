@@ -3,6 +3,7 @@ package com.supience.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,4 +24,7 @@ public class SignupRequest {
     @NotBlank(message = "이름은 필수입니다.")
     @Pattern(regexp = "^[가-힣]{2,10}$", message = "이름은 한글로 2~10자리여야 합니다.")
     private String name;
+    
+    @Email(message = "올바른 이메일 형식이어야 합니다.")
+    private String email;
 } 
