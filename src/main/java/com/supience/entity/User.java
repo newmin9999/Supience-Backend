@@ -42,9 +42,8 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Builder
-    public User(String loginId, String password, String name, String email) {
+    public User(String loginId, String password, String name) {
         this.loginId = loginId;
-        this.email = email;
         this.password = password;
         this.name = name;
     }
