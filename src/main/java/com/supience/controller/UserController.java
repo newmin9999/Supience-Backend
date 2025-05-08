@@ -18,7 +18,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 public class UserController {
 
     @Autowired
