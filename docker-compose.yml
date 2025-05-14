@@ -7,7 +7,7 @@ services:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:mysql://218.147.174.79:3307/paddle_dev?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=utf8mb4&useUnicode=true&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_URL=jdbc:mysql://218.147.174.79:3307/paddle_dev?useSSL=false&serverTimezone=Asia/Seoul&useUnicode=true&character_set_server=utf8mb4&allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=admin!@#!@#
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
