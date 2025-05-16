@@ -17,3 +17,5 @@ services:
       - LOG_LEVEL_SUPIENCE=DEBUG
       - LOG_LEVEL_WEB=DEBUG
     restart: unless-stopped
+    volumes:
+      - ./uploads:/uploads
