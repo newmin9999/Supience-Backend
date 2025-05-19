@@ -45,7 +45,7 @@ public class AdminController {
         
         // 쿠키 삭제
         Cookie sessionCookie = new Cookie("ADMIN_SESSION_ID", null);
-        sessionCookie.setPath("/v1/admin");
+        sessionCookie.setPath("/");
         sessionCookie.setHttpOnly(true);
         sessionCookie.setSecure(true);
         sessionCookie.setMaxAge(0);

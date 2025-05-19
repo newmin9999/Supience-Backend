@@ -1,14 +1,17 @@
 package com.supience.controller;
 
+import com.supience.dto.AdminLoginResponse;
 import com.supience.dto.notice.CreateNoticeRequest;
 import com.supience.dto.notice.NoticeResponse;
+import com.supience.exception.BusinessException;
+import com.supience.exception.ErrorCode;
+import com.supience.entity.Admin;
 import com.supience.service.NoticeService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +22,7 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminNoticeController {
     private final NoticeService noticeService;
+    private final HttpSession httpSession;
 
     @GetMapping
     public ResponseEntity<List<NoticeResponse>> getNotices() {
@@ -32,9 +36,21 @@ public class AdminNoticeController {
 
     @PostMapping
     public ResponseEntity<NoticeResponse> createNotice(
-            @Valid @RequestBody CreateNoticeRequest request,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(noticeService.createNotice(request, userDetails.getUsername()));
+            @Valid @RequestBody CreateNoticeRequest request) {
+        Long adminId = (Long) httpSession.getAttribute("adminId");
+        if (adminId == null) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        }
+        
+        // content 데이터 크기 로깅
+        String content = request.getContent();
+        if (content != null) {
+            int byteLength = content.getBytes().length;
+            System.out.println("Content length in bytes: " + byteLength);
+            System.out.println("Content length in characters: " + content.length());
+        }
+        
+        return ResponseEntity.ok(noticeService.createNotice(request, adminId));
     }
 
     @PutMapping("/{id}")

@@ -4,6 +4,8 @@ import com.supience.dto.notice.CreateNoticeRequest;
 import com.supience.dto.notice.NoticeResponse;
 import com.supience.entity.Admin;
 import com.supience.entity.Notice;
+import com.supience.exception.BusinessException;
+import com.supience.exception.ErrorCode;
 import com.supience.repository.AdminRepository;
 import com.supience.repository.NoticeRepository;
 import com.supience.service.NoticeService;
@@ -38,9 +40,9 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional
-    public NoticeResponse createNotice(CreateNoticeRequest request, String name) {
-        Admin admin = adminRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException("관리자를 찾을 수 없습니다."));
+    public NoticeResponse createNotice(CreateNoticeRequest request, Long adminId) {
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ADMIN_NOT_FOUND));
 
         Notice notice = new Notice();
         notice.setTitle(request.getTitle());
@@ -56,10 +58,10 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeResponse updateNotice(Long id, CreateNoticeRequest request) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("공지사항을 찾을 수 없습니다."));
-
+        
         notice.setTitle(request.getTitle());
         notice.setContent(request.getContent());
-
+        
         return new NoticeResponse(notice);
     }
 

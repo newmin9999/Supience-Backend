@@ -42,8 +42,8 @@ public class AdminServiceImpl implements AdminService {
                 .role(admin.getRole())
                 .build();
 
-        // 세션에 관리자 정보 저장
-        httpSession.setAttribute("admin", loginResponse);
+        // 세션에 관리자 ID만 저장
+        httpSession.setAttribute("adminId", admin.getId());
 
         return loginResponse;
     }
@@ -55,28 +55,37 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminLoginResponse getAdminInfo() {
-        AdminLoginResponse adminInfo = (AdminLoginResponse) httpSession.getAttribute("admin");
-        if (adminInfo == null) {
+        Long adminId = (Long) httpSession.getAttribute("adminId");
+        if (adminId == null) {
             throw new BusinessException(ErrorCode.UNAUTHORIZED);
         }
-        return adminInfo;
+
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ADMIN_NOT_FOUND));
+
+        return AdminLoginResponse.builder()
+                .id(admin.getId())
+                .name(admin.getName())
+                .sessionId(httpSession.getId())
+                .role(admin.getRole())
+                .build();
     }
 
     @Override
     public void changePassword(AdminPasswordChangeRequest request) {
-        // 현재 로그인한 관리자 정보 가져오기
-        AdminLoginResponse adminInfo = getAdminInfo();
-        Admin admin = adminRepository.findById(adminInfo.getId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED));
-
-        // 현재 비밀번호 검증
-        if (!passwordEncoder.matches(request.getCurrentPassword(), admin.getPassword())) {
-            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        Long adminId = (Long) httpSession.getAttribute("adminId");
+        if (adminId == null) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
         }
 
-        // 새 비밀번호 암호화 및 저장
-        String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
-        admin.setPassword(encodedNewPassword);
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ADMIN_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), admin.getPassword())) {
+            throw new BusinessException(ErrorCode.ADMIN_INVALID_PASSWORD);
+        }
+
+        admin.setPassword(passwordEncoder.encode(request.getNewPassword()));
         adminRepository.save(admin);
     }
 } 
