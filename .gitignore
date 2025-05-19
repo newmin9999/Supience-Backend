@@ -74,3 +74,5 @@ application-test.yml
 supience.profile
 oauth.yml
 docker-compose.yml
+
+uploads/
