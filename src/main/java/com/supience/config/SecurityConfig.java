@@ -53,20 +53,27 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-            "https://218.147.174.79",
-            "http://localhost:3000"
-        ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        configuration.setAllowCredentials(true);
-        
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+        return request -> {
+            CorsConfiguration config = new CorsConfiguration();
+    
+            String origin = request.getHeader("Origin");
+    
+            // Origin이 있을 경우만 설정 (브라우저 요청일 때만 해당)
+            if (origin != null && !origin.isEmpty()) {
+                config.setAllowedOrigins(List.of(origin));
+            } else {
+                // origin이 null이면 기본 허용 origin을 넣어서 Spring이 예외 던지지 않도록 방어
+                config.setAllowedOrigins(List.of("http://localhost")); // dummy origin
+            }
+    
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            config.setAllowedHeaders(List.of("*"));
+            config.setExposedHeaders(List.of("Authorization", "Content-Type"));
+            config.setAllowCredentials(true);
+            return config;
+        };
     }
+        
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

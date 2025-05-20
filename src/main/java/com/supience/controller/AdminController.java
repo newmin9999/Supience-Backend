@@ -32,7 +32,7 @@ public class AdminController {
         sessionCookie.setPath("/v1/admin");
         sessionCookie.setHttpOnly(true);
         sessionCookie.setSecure(true);
-        sessionCookie.setMaxAge(30 * 60); // 30분
+        sessionCookie.setMaxAge(60 * 60); // 1시간
         response.addCookie(sessionCookie);
 
         return ResponseEntity.ok(new ApiResponse<>(true, "관리자 로그인 성공", loginResponse));
