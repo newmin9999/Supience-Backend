@@ -27,13 +27,7 @@ public class AdminController {
             HttpServletResponse response) {
         AdminLoginResponse loginResponse = adminService.login(request);
         
-        // 세션 ID를 쿠키로 설정
-        Cookie sessionCookie = new Cookie("ADMIN_SESSION_ID", loginResponse.getSessionId());
-        sessionCookie.setPath("/v1/admin");
-        sessionCookie.setHttpOnly(true);
-        sessionCookie.setSecure(true);
-        sessionCookie.setMaxAge(60 * 60); // 1시간
-        response.addCookie(sessionCookie);
+
 
         return ResponseEntity.ok(new ApiResponse<>(true, "관리자 로그인 성공", loginResponse));
     }
@@ -43,8 +37,9 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse response) {
         adminService.logout();
         
+
         // 쿠키 삭제
-        Cookie sessionCookie = new Cookie("ADMIN_SESSION_ID", null);
+        Cookie sessionCookie = new Cookie("JSESSIONID", null);
         sessionCookie.setPath("/");
         sessionCookie.setHttpOnly(true);
         sessionCookie.setSecure(true);

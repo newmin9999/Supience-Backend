@@ -76,3 +76,5 @@ oauth.yml
 docker-compose.yml
 
 uploads/
+
+ssl/
