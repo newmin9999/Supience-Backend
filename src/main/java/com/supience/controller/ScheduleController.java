@@ -21,34 +21,4 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleController {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ScheduleController.class);
-    private final ScheduleService scheduleService;
-    private final HttpSession httpSession;
-
-    @Operation(summary = "운동 일정 생성", description = "새로운 운동 일정을 생성합니다.")
-    @PostMapping
-    public ApiResponse<ScheduleResponse> createSchedule(@RequestBody ScheduleRequest request) {
-        Long userId = ((LoginResponse) httpSession.getAttribute("user")).getId();
-        log.debug("userId: {}", userId);
-        return ApiResponse.success(scheduleService.createSchedule(userId, request));
-    }
-
-    @Operation(summary = "운동 일정 목록 조회", description = "모든 운동 일정 목록을 조회합니다.")
-    @GetMapping
-    public ApiResponse<List<ScheduleResponse>> getSchedules() {
-        return ApiResponse.success(scheduleService.getSchedules());
-    }
-
-    @Operation(summary = "운동 일정 상세 조회", description = "특정 운동 일정의 상세 정보를 조회합니다.")
-    @GetMapping("/{id}")
-    public ApiResponse<ScheduleResponse> getSchedule(@PathVariable Long id) {
-        return ApiResponse.success(scheduleService.getSchedule(id));
-    }
-
-    @Operation(summary = "운동 일정 제거", description = "특정 운동 일정을 제거합니다.")
-    @DeleteMapping("/{scheduleId}")
-    public ApiResponse<Void> deleteSchedule(@PathVariable Long scheduleId) {
-        scheduleService.deleteSchedule(((LoginResponse) httpSession.getAttribute("user")).getId(), scheduleId);
-        return ApiResponse.success(null);
-    }
 } 

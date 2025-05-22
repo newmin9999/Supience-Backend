@@ -1,25 +1,39 @@
 package com.supience.dto.notice;
 
 import com.supience.entity.Notice;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 public class NoticeResponse {
-    private final Long id;
-    private final String title;
-    private final String content;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
-    private final String createdBy;
+    private Long id;
+    private String title;
+    private String content;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private boolean hasSchedule;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
-    public NoticeResponse(Notice notice) {
-        this.id = notice.getId();
-        this.title = notice.getTitle();
-        this.content = notice.getContent();
-        this.createdAt = notice.getCreatedAt();
-        this.updatedAt = notice.getUpdatedAt();
-        this.createdBy = notice.getCreatedBy() != null ? notice.getCreatedBy().getName() : null;
+    public static NoticeResponse from(Notice notice) {
+        NoticeResponse.NoticeResponseBuilder builder = NoticeResponse.builder()
+                .id(notice.getId())
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .createdAt(notice.getCreatedAt())
+                .updatedAt(notice.getUpdatedAt());
+
+        if (notice.getSchedule() != null) {
+            builder.hasSchedule(true)
+                   .startTime(notice.getSchedule().getStartTime())
+                   .endTime(notice.getSchedule().getEndTime());
+        } else {
+            builder.hasSchedule(false);
+        }
+
+        return builder.build();
     }
 } 

@@ -1,5 +1,6 @@
 package com.supience.controller;
 
+import com.supience.dto.ApiResponse;
 import com.supience.dto.AdminLoginResponse;
 import com.supience.dto.notice.CreateNoticeRequest;
 import com.supience.dto.notice.NoticeResponse;
@@ -25,17 +26,19 @@ public class AdminNoticeController {
     private final HttpSession httpSession;
 
     @GetMapping
-    public ResponseEntity<List<NoticeResponse>> getNotices() {
-        return ResponseEntity.ok(noticeService.getAllNotices());
+    public ApiResponse<List<NoticeResponse>> getAllNotices() {
+        List<NoticeResponse> notices = noticeService.getAllNotices();
+        return ApiResponse.success("공지사항 목록 조회 성공", notices);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NoticeResponse> getNotice(@PathVariable Long id) {
-        return ResponseEntity.ok(noticeService.getNotice(id));
+    public ApiResponse<NoticeResponse> getNotice(@PathVariable Long id) {
+        NoticeResponse notice = noticeService.getNotice(id);
+        return ApiResponse.success("공지사항 조회 성공", notice);
     }
 
     @PostMapping
-    public ResponseEntity<NoticeResponse> createNotice(
+    public ApiResponse<NoticeResponse> createNotice(
             @Valid @RequestBody CreateNoticeRequest request) {
         Long adminId = (Long) httpSession.getAttribute("adminId");
         if (adminId == null) {
@@ -50,19 +53,21 @@ public class AdminNoticeController {
             System.out.println("Content length in characters: " + content.length());
         }
         
-        return ResponseEntity.ok(noticeService.createNotice(request, adminId));
+        NoticeResponse notice = noticeService.createNotice(request);
+        return ApiResponse.success("공지사항 생성 성공", notice);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<NoticeResponse> updateNotice(
-            @PathVariable Long id,
-            @Valid @RequestBody CreateNoticeRequest request) {
-        return ResponseEntity.ok(noticeService.updateNotice(id, request));
-    }
+    // @PutMapping("/{id}")
+    // public ApiResponse<NoticeResponse> updateNotice(
+    //         @PathVariable Long id,
+    //         @RequestBody CreateNoticeRequest request) {
+    //     NoticeResponse notice = noticeService.updateNotice(request);
+    //     return ApiResponse.success("공지사항 수정 성공", notice);
+    // }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNotice(@PathVariable Long id) {
+    public ApiResponse<Void> deleteNotice(@PathVariable Long id) {
         noticeService.deleteNotice(id);
-        return ResponseEntity.ok().build();
+        return ApiResponse.success("공지사항 삭제 성공", null);
     }
 } 
