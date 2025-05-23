@@ -1,10 +1,11 @@
 package com.supience.dto.notice;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 public class CreateNoticeRequest {
@@ -17,7 +18,9 @@ public class CreateNoticeRequest {
 
     private boolean hasSchedule;
 
-    private LocalDateTime startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startTime;
 
-    private LocalDateTime endTime;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endTime;
 } 

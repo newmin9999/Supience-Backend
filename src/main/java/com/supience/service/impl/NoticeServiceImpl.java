@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,9 +54,12 @@ public class NoticeServiceImpl implements NoticeService {
                 throw new BusinessException(ErrorCode.INVALID_REQUEST, "시작 시간은 종료 시간보다 이전이어야 합니다.");
             }
             
+            LocalDateTime startDateTime = LocalDateTime.of(request.getStartTime(), LocalTime.MIN);
+            LocalDateTime endDateTime = LocalDateTime.of(request.getEndTime(), LocalTime.MAX);
+            
             Schedule schedule = Schedule.builder()
-                    .startTime(request.getStartTime())
-                    .endTime(request.getEndTime())
+                    .startTime(startDateTime)
+                    .endTime(endDateTime)
                     .build();
             
             notice.setSchedule(schedule);
