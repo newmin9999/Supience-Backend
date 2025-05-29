@@ -36,7 +36,11 @@ public enum ErrorCode {
     // 일정 관련 에러
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다."),
     SCHEDULE_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 존재하는 일정입니다."),
-    SCHEDULE_TIME_CONFLICT(HttpStatus.CONFLICT, "일정 시간이 중복됩니다.");
+    SCHEDULE_TIME_CONFLICT(HttpStatus.CONFLICT, "일정 시간이 중복됩니다."),
+
+    // 뉴스 관련 에러
+    NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "뉴스를 찾을 수 없습니다."),
+    COMPETITION_NOT_FOUND(HttpStatus.NOT_FOUND, "대회를 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;
