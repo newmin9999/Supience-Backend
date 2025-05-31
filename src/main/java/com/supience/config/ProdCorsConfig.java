@@ -18,7 +18,8 @@ public class ProdCorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
             "https://218.147.174.79",
-            "https://ksupa.org"  // 실제 운영 도메인으로 변경 필요
+            "https://ksupa.org",
+            "https://admin.ksupa.org"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
